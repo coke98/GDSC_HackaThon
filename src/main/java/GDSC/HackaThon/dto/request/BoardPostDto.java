@@ -34,7 +34,6 @@ public class BoardPostDto {
     private State state;
 
 
-    private String title;
     private String content;
 
     private String serialNumber;
@@ -46,14 +45,13 @@ public class BoardPostDto {
         dto에는 user 정보와 , 저장할 파일 리스트를 가지고 있다.
      */
     @Builder
-    public BoardPostDto(Member member, State state, String company, String title,String serialNumber ,String content,
+    public BoardPostDto(Member member, State state, String company,String serialNumber ,String content,
                         Map<AttachmentType, List<MultipartFile>> attachmentFiles) {
 
         this.member = member;
         this.state = state;
         this.company = company;
         this.serialNumber = serialNumber;
-        this.title = title;
         this.content = content;
         this.attachmentFiles = attachmentFiles;
 
@@ -67,7 +65,6 @@ public class BoardPostDto {
 
         return Board.builder()
                 .member(member)
-                .title(title)
                 .content(content)
                 .serialNumber(serialNumber)
                 .state(state)

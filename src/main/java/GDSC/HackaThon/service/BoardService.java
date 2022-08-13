@@ -2,11 +2,19 @@ package GDSC.HackaThon.service;
 
 import GDSC.HackaThon.domain.Attachment;
 import GDSC.HackaThon.domain.Board;
+import GDSC.HackaThon.domain.FileStore;
+import GDSC.HackaThon.domain.enums.AttachmentType;
 import GDSC.HackaThon.dto.request.BoardPostDto;
+import GDSC.HackaThon.dto.request.BoardPostFormDto;
+import GDSC.HackaThon.dto.request.BoardPostUpdateDto;
+import GDSC.HackaThon.dto.response.BoardListResponse;
+import GDSC.HackaThon.dto.response.BoardResponse;
+import GDSC.HackaThon.repository.AttachmentRepository;
 import GDSC.HackaThon.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -18,6 +26,10 @@ public class BoardService {
 
     private final AttachmentServiceImpl attachmentServiceImpl;
     private final BoardRepository boardRepository;
+
+    private final AttachmentRepository attachmentRepository;
+
+    private final FileStore fileStore;
 
 
 
@@ -37,4 +49,55 @@ public class BoardService {
         return boardRepository.save(board);
     }
 
+    public List<BoardListResponse> findAllBoards() {
+
+        List<Board> boards = boardRepository.findAllWithMember();
+
+        List<BoardListResponse> boardListResponses = BoardListResponse.of(boards);
+
+        return boardListResponses;
+    }
+
+    public BoardResponse findById(Long id) {
+
+        Board board = boardRepository.findByIdWithMember(id).orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다."));
+        BoardResponse boardResponse = BoardResponse.of(board);
+        return boardResponse;
+    }
+
+    public BoardResponse findBySerialNumber(String serialNumber) {
+
+        Board board = boardRepository.findBySerialNumberWithMember(serialNumber).orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다."));
+        BoardResponse boardResponse = BoardResponse.of(board);
+        return boardResponse;
+    }
+
+    @Transactional
+    public void deleteById(Long id) {
+        boardRepository.deleteById(id);
+    }
+
+    @Transactional
+    public Board update(Long id, BoardPostUpdateDto updateDto) throws IOException {
+
+        Board board = boardRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다."));
+
+        // 수정하고자 하는 파일이 있으면 , 게시글이 원래 가지고 있던 사진들 삭제 처리
+        // 수정하고자 하는 파일이 없으면 , 기존의 사진들을 삭제하지 않는다.
+        if (updateDto.getImageFiles().get(0).getBytes().length != 0) {
+            attachmentRepository.deleteByBoardId(id);
+        }
+
+        List<MultipartFile> imageFiles = updateDto.getImageFiles();
+        List<Attachment> attachments = fileStore.storeFiles(imageFiles, AttachmentType.IMAGE);
+
+
+        attachments.stream().forEach(e-> e.setBoard(board));
+
+        Board changed = board.updateEntity(updateDto, attachments);
+
+
+        return changed;
+
+    }
 }

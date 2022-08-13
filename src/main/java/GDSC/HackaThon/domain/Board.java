@@ -1,14 +1,13 @@
 package GDSC.HackaThon.domain;
 
-import GDSC.HackaThon.domain.enums.Company;
 import GDSC.HackaThon.domain.enums.State;
+import GDSC.HackaThon.dto.request.BoardPostUpdateDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @Entity
@@ -33,8 +32,6 @@ public class Board extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private State state;
 
-    private String title;
-
     private String content;
 
     /**
@@ -48,7 +45,7 @@ public class Board extends BaseTimeEntity {
     private String serialNumber;
 
     @OneToMany(mappedBy = "board", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Collection<Attachment> attachedFiles = new ArrayList<>();
+    private List<Attachment> attachedFiles = new ArrayList<>();
 
 
     /**
@@ -62,9 +59,8 @@ public class Board extends BaseTimeEntity {
 
 
     @Builder
-    public Board(String title,State state ,String content, String company, String serialNumber, Member member,
+    public Board(State state ,String content, String company, String serialNumber, Member member,
                     List<Attachment> attachedFiles) {
-        this.title = title;
         this.content = content;
         this.company = company;
         this.state = state;
@@ -73,4 +69,14 @@ public class Board extends BaseTimeEntity {
         this.attachedFiles = attachedFiles;
     }
 
+
+    public Board updateEntity(BoardPostUpdateDto updateDto, List<Attachment> attachments) {
+
+        this.content = updateDto.getContent();
+        this.company = updateDto.getCompany();
+        this.serialNumber = updateDto.getSerialNumber();
+        this.state = updateDto.getState();
+        this.attachedFiles = attachments;
+        return this;
+    }
 }

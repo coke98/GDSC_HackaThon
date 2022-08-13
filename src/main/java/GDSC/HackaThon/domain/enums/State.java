@@ -18,4 +18,14 @@ public enum State {
         this.name = name;
     }
 
+    // name to convert enum
+    public static State nameToEnum(String name) {
+        for (State state : State.values()) {
+            if (state.getName().equals(name)) {
+                return state;
+            }
+        }
+        return null;
+    }
+
 }

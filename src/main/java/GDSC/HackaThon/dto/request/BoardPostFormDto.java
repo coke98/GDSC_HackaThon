@@ -5,6 +5,7 @@ import GDSC.HackaThon.domain.Member;
 import GDSC.HackaThon.domain.enums.AttachmentType;
 import GDSC.HackaThon.domain.enums.Company;
 import GDSC.HackaThon.domain.enums.State;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,19 +26,21 @@ import java.util.concurrent.ConcurrentHashMap;
 @NoArgsConstructor
 public class BoardPostFormDto extends BaseTimeEntity {
 
-    private String title;
+    @ApiModelProperty(value = "게시글 설명")
     private String content;
 
     /**
      * 실제 웹 맛집 등록 폼으로부터 입력 받는 값들만 선언
      * 어느 회사에서 만든 자전거인지 한글 회사명 넘어온다.
      */
+    @ApiModelProperty(value = "게시글에 작성한 자전거의 회사")
     private String companyName;
 
 
     /**
      * 자전거 고유 번호
      */
+    @ApiModelProperty(value = "자전거 고유 번호")
     private String serialNumber;
 
 
@@ -54,6 +57,7 @@ public class BoardPostFormDto extends BaseTimeEntity {
      * .getOriginalFilename()
      *
      */
+    @ApiModelProperty(value = "자전거 이미지 목록")
     private List<MultipartFile> imageFiles;
 
     /**
@@ -69,10 +73,9 @@ public class BoardPostFormDto extends BaseTimeEntity {
      *  바인딩의 목적으로 만들어졌다.
      */
     @Builder
-    public BoardPostFormDto(String companyName, String title,String content,String serialNumber ,
+    public BoardPostFormDto(String companyName,String content,String serialNumber ,
                             List<MultipartFile> imageFiles ) {
         this.companyName = companyName;
-        this.title = title;
         this.content = content;
         this.serialNumber = serialNumber;
         this.imageFiles = (imageFiles != null) ? imageFiles : new ArrayList<>() ;
@@ -96,7 +99,6 @@ public class BoardPostFormDto extends BaseTimeEntity {
                 .member(member)
                 .company(companyName) //string을 enum으로 바꿔야 한다.
                 .state(State.AUTHENTICATED) // 초기 board를 작성할떄는 간리자가 등록을 인증을 해줘야 한다. 그러므로 인증되지 않은 상태를 의미하는 Enum을 넣어준다.
-                .title(title)
                 .content(content)
                 .serialNumber(serialNumber)
                 .attachmentFiles(attachments)
