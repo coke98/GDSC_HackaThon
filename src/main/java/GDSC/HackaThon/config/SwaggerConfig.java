@@ -31,7 +31,7 @@ public class SwaggerConfig {
                 .produces(DEFAULT_PRODUCES_AND_CONSUMES)
                 .consumes(DEFAULT_PRODUCES_AND_CONSUMES)
                 .apiInfo(DEFAULT_API_INFO).select()
-                .apis(RequestHandlerSelectors.basePackage("GDSC.HackaThon.controller"))
+                .apis(RequestHandlerSelectors.basePackage("GDSC.HackaThon.controller.controller"))
                 .paths(PathSelectors.any())
                 .build();
     }
