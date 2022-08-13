@@ -1,10 +1,10 @@
-package GDSC.HackaThon;
+package GDSC.HackaThon.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class controller {
+public class TestController {
 
     @GetMapping("/test")
     public String test() {
