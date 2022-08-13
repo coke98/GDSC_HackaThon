@@ -5,15 +5,18 @@ import GDSC.HackaThon.domain.Member;
 import GDSC.HackaThon.domain.enums.AttachmentType;
 import GDSC.HackaThon.dto.request.BoardPostDto;
 import GDSC.HackaThon.dto.request.BoardPostFormDto;
+import GDSC.HackaThon.repository.MemberRepository;
 import GDSC.HackaThon.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -21,6 +24,10 @@ public class BoardController {
 
     private final BoardService boardService;
     private final FileStore fileStore;
+
+    private final MemberRepository memberRepository;
+
+
 
     /**
      * 새롭게 작성한  게시글 폼을 등록한다.
@@ -33,34 +40,35 @@ public class BoardController {
      * 그러면 해당 GetMapping을 통해서 서버의 /resources/images에 접근해서 해당 사진을 찾아줄것이다.
      *
      *
-     * @param boardPostFormDto 작성하고자 하는  게시글의 상세 정보를 담고 있다. -> member에 대한 정보는 아직 X
-     * @param authentication 게시글을 작성한 사용자의 정보가 필요하다. 게시글은 작성한 사용자의 고유 id값이 필요하다.
+     *
      * @author LEE SOO CHAN
      */
-    @PostMapping("/boardForm")
-    public String save_FoodForm(@ModelAttribute BoardPostFormDto boardPostFormDto , Authentication authentication) throws IOException {
+    @PostMapping(value = "/boardForm" , produces = "application/json")
+    @ResponseBody
+    public String save_FoodForm(@RequestPart("imageFiles") List<MultipartFile> imageFiles,
+                                @RequestParam("title") String title,
+                                @RequestParam("content") String content,
+                                @RequestParam("serialNumber") String serialNumber,
+                                @RequestParam("companyName") String companyName) throws IOException {
 
-//        PrincipalDetails userDetails = (PrincipalDetails) authentication.getPrincipal();
-//        Long user_db_id = userDetails.getUser().getDb_id();
-//        User user = userRepository.findById(user_db_id).orElse(null); // 로그인한 사용자의 entity 찾아준다.
+        Member member = memberRepository.findById(1L).orElse(null);
 
-        // 해당 게시글을 작성한 Member의 Entity가 필요하다. todo : member를 찾아와서 넣어줘야 한다.
-        Member member = new Member();
+        BoardPostFormDto build = BoardPostFormDto.builder()
+                .title(title)
+                .content(content)
+                .serialNumber(serialNumber)
+                .companyName(companyName)
+                .imageFiles(imageFiles).build();
 
-        BoardPostDto boardPostDto = boardPostFormDto.createBoardPostDto(member);// member 정보를 담고 있는 BoardPostDto 만든다.
+
+        BoardPostDto boardPostDto = build.createBoardPostDto(member);// member 정보를 담고 있는 BoardPostDto 만든다.
 
         boardService.post(boardPostDto); // 최종 등록 Db에 등록
 
-        return "redirect:/foods";
+        return "good";
     }
 
-    /**
-     * 맛집 게시글 혹은 맛집 게시글 상세 페이지에서 사진을 html에 보여주기 위해서 필요
-     * @param filename /images/{파일이름}
-     * @return 사진을 찾아주는 url
-     * @throws MalformedURLException
-     * @author LEE SOO CHAN
-     */
+
     @ResponseBody
     @GetMapping("/images/{filename}")
     public UrlResource processImg(@PathVariable String filename) throws MalformedURLException {

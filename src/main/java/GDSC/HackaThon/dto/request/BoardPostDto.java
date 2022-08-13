@@ -26,7 +26,7 @@ public class BoardPostDto {
     /**
      * 실제 데이터를 등록할때는 state 와 Company를 넣어준다.
      */
-    private Company company;
+    private String company;
 
     /**
      * * state 값은 기본적으로는 인증 대기 상태이다.
@@ -46,7 +46,7 @@ public class BoardPostDto {
         dto에는 user 정보와 , 저장할 파일 리스트를 가지고 있다.
      */
     @Builder
-    public BoardPostDto(Member member, State state, Company company, String title,String serialNumber ,String content,
+    public BoardPostDto(Member member, State state, String company, String title,String serialNumber ,String content,
                         Map<AttachmentType, List<MultipartFile>> attachmentFiles) {
 
         this.member = member;

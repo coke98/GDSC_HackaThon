@@ -5,17 +5,14 @@ import lombok.Getter;
 /**
  * 자전거 만든 회사
  */
-@Getter
+
 public enum Company {
 
-    SAMSUNG("삼성"),
-    LG("엘지"),
-    SK("스카이웨어");
+    SAMSUNG("samsung"),
+    LG("lg"),
+    SK("sk");
 
-    private String name;
-
-    private Company(String name) {
-        this.name = name;
+    Company(String companyName) {
     }
 
 }

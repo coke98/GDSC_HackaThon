@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+    <form action="/boardForm"  method="post" enctype="multipart/form-data">
+        <input type="text" name="title" placeholder="제목">
+        <textarea name="content" placeholder="내용"></textarea>
+        <input type="text" name="companyName" placeholder="회사명">
+        <input type="text" name="serialNumber" placeholder="시리얼번호">
+        <input required type="file" name="imageFiles"  multiple="multiple">
+        <input type="submit" value="전송">
+    </form>
+
+</body>
+</html>

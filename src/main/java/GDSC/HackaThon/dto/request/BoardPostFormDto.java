@@ -22,15 +22,11 @@ import java.util.concurrent.ConcurrentHashMap;
  * user 추가할 예정 BoardPostDto에서..
  */
 @Getter
-@Setter // 바인딩 하기 위해서 반드시 존재해야 한다.
 @NoArgsConstructor
 public class BoardPostFormDto extends BaseTimeEntity {
 
-
     private String title;
-
     private String content;
-
 
     /**
      * 실제 웹 맛집 등록 폼으로부터 입력 받는 값들만 선언
@@ -98,8 +94,8 @@ public class BoardPostFormDto extends BaseTimeEntity {
 
         return BoardPostDto.builder()
                 .member(member)
-                .company(Company.valueOf(companyName)) //string을 enum으로 바꿔야 한다.
-                .state(State.NOT_AUTHENTICATED) // 초기 board를 작성할떄는 간리자가 등록을 인증을 해줘야 한다. 그러므로 인증되지 않은 상태를 의미하는 Enum을 넣어준다.
+                .company(companyName) //string을 enum으로 바꿔야 한다.
+                .state(State.AUTHENTICATED) // 초기 board를 작성할떄는 간리자가 등록을 인증을 해줘야 한다. 그러므로 인증되지 않은 상태를 의미하는 Enum을 넣어준다.
                 .title(title)
                 .content(content)
                 .serialNumber(serialNumber)

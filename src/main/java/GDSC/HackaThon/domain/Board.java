@@ -40,8 +40,7 @@ public class Board extends BaseTimeEntity {
     /**
      * 자전거를 만든 회사
      */
-    @Enumerated(EnumType.STRING)
-    private Company company;
+    private String company;
 
     /**
      * 자전거 고유 번호
@@ -63,7 +62,7 @@ public class Board extends BaseTimeEntity {
 
 
     @Builder
-    public Board(String title,State state ,String content, Company company, String serialNumber, Member member,
+    public Board(String title,State state ,String content, String company, String serialNumber, Member member,
                     List<Attachment> attachedFiles) {
         this.title = title;
         this.content = content;
